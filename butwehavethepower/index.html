@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Union Strike Folk Song</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+<h1 id="title">Union Strike Folk Song</h1>
+
+<video src="https://www.cs.tufts.edu/comp/120/butwehavethepower.mp4" id="butwehavethepower" controls></video>
+<div id="lyrics"></div>
+
+<script>
+
+
+	var video = document.getElementById("butwehavethepower");
+	temp = "";
+	subtitles = new Object;
+	subtitles[6] = "Come gather round, children,";
+	subtitles[9] = "It's high time ye learned";
+	subtitles[11] = "'Bout a hero named Homer";
+	subtitles[13] = "And a devil named Burns.";
+
+	subtitles[17] = "We'll march 'till we drop";
+	subtitles[19] = "The girls and the fellas.";
+	subtitles[21] = "We'll fight 'till the death";
+	subtitles[23] = "Or else fold like umbrellas.";
+	subtitles[27] = "";
+
+	subtitles[38] = "So we'll march day and night";
+	subtitles[41] = "By the big cooling tower.";
+	subtitles[43] = "They have the plant";
+	subtitles[45] = "But we have the power.";
+	subtitles[50] = "";
+
+	subtitles[53] = 'Now do "Classical Gas!"';
+	subtitles[55] = "";
+
+	subtitles[73] = "So we'll march day and night";
+	subtitles[75] = "By the big cooling tower.";
+	subtitles[77] = "They have the plant";
+	subtitles[80] = "But we have the power.";
+	subtitles[82] = "So we'll march day and night";
+	subtitles[84] = "By the big cooling tower.";
+	subtitles[87] = "They have the plant";
+	subtitles[89] = "But we have the power.";
+	subtitles[91] = "";
+
+	video.addEventListener("timeupdate", function() {
+		if (Math.round(video.currentTime) in subtitles){
+			temp = subtitles[Math.round(video.currentTime)];
+		}
+		document.getElementById("lyrics").innerHTML = temp;
+	});
+
+	function backgroundChange() {
+		const colors = ["LightBlue", "LightCyan", "Lavendar", "LightSkyBlue", "LightSteelBlue"];
+		const att = document.querySelector("div");
+		const bg = colors[Math.floor(Math.random()*colors.length)];
+		att.style.backgroundColor = bg;
+	}
+	setInterval(backgroundChange, 500);
+</script>
+</body>
+</html>	
