@@ -17,6 +17,7 @@ function showPosition(position) {
     var url = "https://secret-reef-32430.herokuapp.com/rides";
     var params = "username=vot48s6K&lat=" + lat + "&lng=" + long;
     http.open('POST', url, true);
+    
     http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     http.setRequestHeader("Access-Control-Allow-Origin", "*");
     
