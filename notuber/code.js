@@ -14,11 +14,12 @@ function showPosition(position) {
     myMark = new google.maps.Marker({ position: myPosition, map: map});
 
     var http = new XMLHttpRequest();
-    var url = "https://jordan-marsh.herokuapp.com/rides";
+    var url = "https://secret-reef-32430.herokuapp.com/rides";
     var params = "username=vot48s6K&lat=" + lat + "&lng=" + long;
-
     http.open('POST', url, true);
     http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    http.setRequestHeader("Access-Control-Allow-Origin", "*");
+    
     list = http.send(params);
     http.onreadystatechange = function(){
         if(http.readyState == 4 && http.status == 200){
