@@ -16,12 +16,11 @@ function showPosition(position) {
     var http = new XMLHttpRequest();
     var url = "https://secret-reef-32430.herokuapp.com/rides";
     var params = "username=vot48s6K&lat=" + lat + "&lng=" + long;
+
     http.open('POST', url, true);
-    
     http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    http.setRequestHeader("Access-Control-Allow-Origin", "*");
+    //http.setRequestHeader("Access-Control-Allow-Origin", "*");
     
-    list = http.send(params);
     http.onreadystatechange = function(){
         if(http.readyState == 4 && http.status == 200){
             content = addCars(http.responseText, map, lat, long);
@@ -33,7 +32,8 @@ function showPosition(position) {
             myMark.addListener("click", ()=>{infoWindow.open({anchor: myMark, map, shouldFocus: false})});
         }
     }
-    
+
+    list = http.send(params);
     
   }
 
