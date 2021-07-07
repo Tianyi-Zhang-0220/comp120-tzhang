@@ -1,1 +1,134 @@
-function makeMap(){navigator.geolocation?navigator.geolocation.getCurrentPosition(showPosition):x.innerHTML="Geolocation is not supported by this browser."}function showPosition(n){const t=n.coords.latitude,o=n.coords.longitude,e={lat:t,lng:o},a=new google.maps.Map(document.getElementById("map"),{zoom:2,center:e});myMark=new google.maps.Marker({position:e,map:a});var s=new XMLHttpRequest,i="username=vot48s6K&lat="+t+"&lng="+o;s.open("POST","https://secret-reef-32430.herokuapp.com/rides",!0),s.setRequestHeader("Content-Type","application/x-www-form-urlencoded"),s.onreadystatechange=function(){if(4==s.readyState&&200==s.status){content=addCars(s.responseText,a,t,o),contentWindow="<h1>Closest Car to my Position</h1><p>ID: "+content[1]+"</p><p>Username: "+content[2]+"</p><p>Distance: "+content[0]+" miles</p>";const n=new google.maps.InfoWindow({content:contentWindow});myMark.addListener("click",()=>{n.open({anchor:myMark,map:a,shouldFocus:!1})})}},list=s.send(i)}function addCars(n,t,o,e){var a;for(obj=JSON.parse(n),a=0;a<n.length;a++)try{addInfoWindow(obj,a,t,o,e)}catch(n){console.log("Unhandled Promise Rejection: TypeError")}return findDistance(n,o,e,t)}function findDistance(n,t,o,e){var a;for(value=-1,id="",username="",smallLat=0,smallLong=0,a=0;a<n.length;a++)try{const n=6371e3,e=t*Math.PI/180,s=obj[a].lat*Math.PI/180,i=(obj[a].lat-t)*Math.PI/180,r=(obj[a].lng-o)*Math.PI/180,l=Math.sin(i/2)*Math.sin(i/2)+Math.cos(e)*Math.cos(s)*Math.sin(r/2)*Math.sin(r/2),c=n*(2*Math.atan2(Math.sqrt(l),Math.sqrt(1-l)));(-1==value||c<value)&&(value=c,id=obj[a].id,username=obj[a].username,smallLat=obj[a].lat,smallLong=obj[a].lng)}catch(n){console.log("Unhandled Promise Rejection: TypeError")}const s=[{lat:t,lng:o},{lat:smallLat,lng:smallLong}];return new google.maps.Polyline({path:s,geodesic:!0,strokeColor:"#8A2BE2",strokeOpacity:1,strokeWeight:2}).setMap(e),value/=1609.344,[value,id,username]}function addInfoWindow(n,t,o,e,a){position={lat:n[t].lat,lng:n[t].lng},newMark=new google.maps.Marker({position:position,map:o}),newMark.setIcon("car.png");const s=e*Math.PI/180,i=n[t].lat*Math.PI/180,r=(n[t].lat-e)*Math.PI/180,l=(n[t].lng-a)*Math.PI/180,c=Math.sin(r/2)*Math.sin(r/2)+Math.cos(s)*Math.cos(i)*Math.sin(l/2)*Math.sin(l/2),d=6371e3*(2*Math.atan2(Math.sqrt(c),Math.sqrt(1-c)))/1609.344;contentWindow="<h1>This car's info</h1><p>ID: "+n[t].id+"</p><p>Username: "+n[t].username+"</p><p>Distance from me: "+d+" miles</p>";var h=new google.maps.InfoWindow({content:contentWindow});newMark.infowindow=h,newMark.addListener("click",function(){return this.infowindow.open(o,this)})}
+function makeMap() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+      x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+  }
+  
+function showPosition(position) {
+    const lat = position.coords.latitude;
+    const long = position.coords.longitude;
+    const myPosition = { lat: lat, lng: long };
+    const map = new google.maps.Map(document.getElementById("map"), { zoom: 2, center: myPosition, });
+    myMark = new google.maps.Marker({ position: myPosition, map: map});
+
+    var http = new XMLHttpRequest();
+    var url = "https://secret-reef-32430.herokuapp.com/rides";
+    var params = "username=vot48s6K&lat=" + lat + "&lng=" + long;
+
+    http.open('POST', url, true);
+    http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    //http.setRequestHeader("Access-Control-Allow-Origin", "*");
+    
+    http.onreadystatechange = function(){
+        if(http.readyState == 4 && http.status == 200){
+            content = addCars(http.responseText, map, lat, long);
+            contentWindow = "<h1>Closest Car to my Position</h1>" + 
+                            "<p>ID: "+ content[1] + "</p>" +
+                            "<p>Username: " + content[2] + "</p>" +
+                            "<p>Distance: "+content[0]+" miles</p>";
+            const infoWindow = new google.maps.InfoWindow({content: contentWindow,});
+            myMark.addListener("click", ()=>{infoWindow.open({anchor: myMark, map, shouldFocus: false})});
+        }
+    }
+
+    list = http.send(params);
+    
+  }
+
+function addCars(list, map, lat, long) {
+    var i;
+    obj = JSON.parse(list);
+    for (i = 0; i<list.length; i++){
+        try{ 
+            addInfoWindow(obj, i, map, lat, long);
+            
+        } catch (TypeError){
+            console.log("Unhandled Promise Rejection: TypeError")
+        }
+    }
+    return findDistance(list, lat, long, map);
+  }
+
+function findDistance(list, lat, long, map) {
+    var i;
+    value = -1;
+    id = "";
+    username = "";
+    smallLat = 0;
+    smallLong = 0;
+    for (i = 0; i<list.length; i++){
+        try{
+            const R = 6371e3;
+            const one = lat * Math.PI/180;
+            const two = obj[i].lat * Math.PI/180;
+            const three = (obj[i].lat-lat) * Math.PI/180;
+            const four = (obj[i].lng-long) * Math.PI/180;
+
+            const a = Math.sin(three/2) * Math.sin(three/2) +
+                    Math.cos(one) * Math.cos(two) *
+                    Math.sin(four/2) * Math.sin(four/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+            const d = R * c;
+            if(value == -1 || d < value){
+                value = d;
+                id = obj[i].id;
+                username = obj[i].username;
+                smallLat = obj[i].lat;
+                smallLong = obj[i].lng;
+            }
+        } catch (TypeError){
+            console.log("Unhandled Promise Rejection: TypeError")
+        }
+        
+    }
+
+    const theLine = [{lat: lat, lng: long}, {lat: smallLat, lng: smallLong}];
+    const thePath = new google.maps.Polyline({
+        path: theLine,
+        geodesic: true,
+        strokeColor: "#8A2BE2",
+        strokeOpacity: 1.0,
+        strokeWeight: 2,
+    });
+    thePath.setMap(map);
+
+    value = value / 1609.344;
+    return [value, id, username];
+
+  }
+
+function addInfoWindow(obj, i, map, lat, long) {
+    position = { lat: obj[i].lat, lng: obj[i].lng, };
+    newMark = new google.maps.Marker({ position: position, map: map });
+    newMark.setIcon("car.png");
+    
+    const R = 6371e3; // metres
+    const one = lat * Math.PI/180; // φ, λ in radians
+    const two = obj[i].lat * Math.PI/180;
+    const three = (obj[i].lat-lat) * Math.PI/180;
+    const four = (obj[i].lng-long) * Math.PI/180;
+
+    const a = Math.sin(three/2) * Math.sin(three/2) +
+            Math.cos(one) * Math.cos(two) *
+            Math.sin(four/2) * Math.sin(four/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    const d = R * c / 1609.344;
+
+
+    contentWindow = "<h1>This car's info</h1>" + 
+                    "<p>ID: "+ obj[i].id + "</p>" +
+                    "<p>Username: " + obj[i].username + "</p>" + 
+                    "<p>Distance from me: " + d + " miles</p>";
+
+    var infoWindow = new google.maps.InfoWindow({content: contentWindow});
+    newMark.infowindow = infoWindow;
+    newMark.addListener("click", function() {
+        return this.infowindow.open(map, this);
+    });
+}
+
+
