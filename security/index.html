@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Security</title>
+    <meta name = "description" content = "Security (Lab13)"/>
+    <meta author = "Tianyi Zhang"/>
+    <meta charset = "UTF-8"/>
+  </head>
+  <body>
+    <h3>Introduction</h3>
+        <div id = "width">
+            <article>&nbsp; &nbsp; &nbsp; The product that I am looking at is something called 
+                server-vuln.js, which is essentially server side code that helps create a google 
+                maps api by sending the client data about a few cars in the from of JSON data.
+            </article>
+        </div>
+
+    <h3>Methodology</h3>
+        <div id = "width">
+            <article>&nbsp; &nbsp; &nbsp; The methodology that I used in finding these errors was by
+                first looking through the code and seeing which potential errors I can find by comparing
+                those described as the most common or dangerous software errors.
+            </article>
+        </div>
+
+    <h3>Abstract of Findings</h3>
+        <div id = "width">
+            <article>&nbsp; &nbsp; &nbsp; There were many security and privacy problems that I identfied.
+                The most dangerous one being that there are two potential locations of Reflected XSS occurring,
+                one in each post method. This is closely related to input validation, since user input can never
+                be trusted. This then leads to how another weakness where user input is being inserted into the 
+                sql database. There are also potential locations of out of bounds read and write.
+            </article>
+        </div>
+
+    <h3>Issues</h3>
+    <div id = "width">
+        <ol>
+            <li>The issue here is that the user inputted data is being used which could potentially cause Relected XSS.
+                The location is in app.post('/rides'). The severity here is high, since the user inputted data is also being 
+                inputted into the postgresql database. I found the issue by looking through post methods, since they take 
+                in data, and seeing if the taken in data is used in any manner.
+            </li>
+            <li>The issue here is that the user inputted data is being used which could potentially cause Relected XSS.
+                The location is in app.post('/update'). The severity here is high, since the user inputted data is also being 
+                inputted into the postgresql database, which could potentially cause data leakage. I found the issue by looking 
+                through post methods, since they take in data, and seeing if the taken in data is used in any manner.
+            </li>
+        </ol>
+    </div>
+  </body>
+</html>
+        

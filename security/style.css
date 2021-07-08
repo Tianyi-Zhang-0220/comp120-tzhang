@@ -1,0 +1,8 @@
+#change { color: darkblue }
+#bold { font-weight: 700; }
+#border { border-style: double; width: 400px;
+            height: 100px; border-color: midnightblue; }
+#position { position: fixed; left: 30px; }
+#width { width: 40% }
+hi { color: lightskyblue }
+hi span { background-color: black }
