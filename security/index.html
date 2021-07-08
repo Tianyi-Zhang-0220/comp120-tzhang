@@ -34,20 +34,44 @@
         </div>
 
     <h3>Issues</h3>
-    <div id = "width">
-        <ol>
-            <li>The issue here is that the user inputted data is being used which could potentially cause Relected XSS.
-                The location is in app.post('/rides'). The severity here is high, since the user inputted data is also being 
-                inputted into the postgresql database. I found the issue by looking through post methods, since they take 
-                in data, and seeing if the taken in data is used in any manner.
-            </li>
-            <li>The issue here is that the user inputted data is being used which could potentially cause Relected XSS.
-                The location is in app.post('/update'). The severity here is high, since the user inputted data is also being 
-                inputted into the postgresql database, which could potentially cause data leakage. I found the issue by looking 
-                through post methods, since they take in data, and seeing if the taken in data is used in any manner.
-            </li>
-        </ol>
-    </div>
+        <div id = "width">
+            <ol>
+                <li>The issue here is that the user inputted data is being used which could potentially cause Relected XSS.
+                    The location is in app.post('/rides'). The severity here is high, since the user inputted data is also being 
+                    inputted into the postgresql database. I found the issue by looking through post methods, since they take 
+                    in data, and seeing if the taken in data is used in any manner. To prevent this, you should never put untrusted
+                    data into a sql database or HTML page.
+                </li>
+                <li>The issue here is that the user inputted data is being used which could potentially cause Relected XSS.
+                    The location is in app.post('/update'). The severity here is high, since the user inputted data is also being 
+                    inputted into the postgresql database, which could potentially cause data leakage. I found the issue by looking 
+                    through post methods, since they take in data, and seeing if the taken in data is used in any manner. This can be 
+                    prevented by not accepting unknown data nad especially not inserting it into a sql database. You can also 
+                    HTML encode the data to make sure that there isn't anything suspicious.
+                </li>
+                <li>There is the potential issue of when inserting or accessing data of potential indices being out of bounds. The location 
+                    of this issue is in app.post('/update') and app.get('/'). The severity is pretty low depending on the data in the sql 
+                    database and in this case the data shouldn't be too important. I discovered the issue by reading the article CWE top 25
+                    most dangerous weaknesses and realizing that if the bounds for the indices are not set specific enough, and there's the 
+                    small off chance that an index could be out of bounds that then there's the chance of data being leaked. This can be prevented 
+                    by just setting more specific bounds before accessing/inserting data values so that no data is leaked.
+                </li>
+                <li>The issue here is that there is no user authorization on who gets to access the data inside the sql databases. Since the 
+                    person only needs to give a username, lat, and lng to start inserting values. The severity could potentially be high 
+                    based on what data is in the sql database. This was found because I realized that when inserting or accessing data from 
+                    the databases, no user authorization was needed but only that the username, lat, and lng be valid. This can be fixed by 
+                    including user authentication, such that only with a certain user input can data be accessed or inserted.
+                </li>
+            </ol>
+        </div>
+
+    <h3>Conclusion</h3>
+        <div id = "width">
+            <article>&nbsp; &nbsp; &nbsp; Future recommendations are just to include a few more specifications in who can access the 
+                data that is inserted and accessed by users. Then the more important one is to first check the username, lat, and lng 
+                since those are user inputted, and user input can never be trusted.
+            </article>
+        </div>
   </body>
 </html>
         
