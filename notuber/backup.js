@@ -13,6 +13,8 @@ app.use('/rides', function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     next();
   });
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('views', path.join(__dirname, 'views'))

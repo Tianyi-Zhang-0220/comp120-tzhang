@@ -19,11 +19,10 @@ function showPosition(position) {
 
     http.open('POST', url, true);
     http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    //http.setRequestHeader("Access-Control-Allow-Origin", "*");
     
     http.onreadystatechange = function(){
         if(http.readyState == 4 && http.status == 200){
-            content = addCars(http.responseText, map, lat, long);
+            content = addCars(http.responseText, lat, long, map);
             contentWindow = "<h1>Closest Car to my Position</h1>" + 
                             "<p>ID: "+ content[1] + "</p>" +
                             "<p>Username: " + content[2] + "</p>" +
@@ -37,12 +36,17 @@ function showPosition(position) {
     
   }
 
-function addCars(list, map, lat, long) {
+/*
+  Adds the cars onto the map 
+  Returns: The value, ID and username of the closest vehicle
+            This info is then used in the InfoWindow for your location
+*/
+function addCars(list, lat, long, map) {
     var i;
     obj = JSON.parse(list);
     for (i = 0; i<list.length; i++){
         try{ 
-            addInfoWindow(obj, i, map, lat, long);
+            addInfoWindow(obj, i, list, lat, long, map);
             
         } catch (TypeError){
             console.log("Unhandled Promise Rejection: TypeError")
@@ -51,6 +55,11 @@ function addCars(list, map, lat, long) {
     return findDistance(list, lat, long, map);
   }
 
+/*
+    Finds the distance between your location and the vehicles.
+    The Haversine Formula is used to calculate the distance.
+    Returns: The value, ID and username of the closest vehicle
+*/
 function findDistance(list, lat, long, map) {
     var i;
     value = -1;
@@ -85,6 +94,7 @@ function findDistance(list, lat, long, map) {
         
     }
 
+    //Draws the line and adjusts the line so that it's visible
     const theLine = [{lat: lat, lng: long}, {lat: smallLat, lng: smallLong}];
     const thePath = new google.maps.Polyline({
         path: theLine,
@@ -100,29 +110,19 @@ function findDistance(list, lat, long, map) {
 
   }
 
-function addInfoWindow(obj, i, map, lat, long) {
+//Adds an InfoWindow so the info about the vehicle is available
+function addInfoWindow(obj, i, list, lat, long, map) {
     position = { lat: obj[i].lat, lng: obj[i].lng, };
     newMark = new google.maps.Marker({ position: position, map: map });
     newMark.setIcon("car.png");
     
-    const R = 6371e3; // metres
-    const one = lat * Math.PI/180; // φ, λ in radians
-    const two = obj[i].lat * Math.PI/180;
-    const three = (obj[i].lat-lat) * Math.PI/180;
-    const four = (obj[i].lng-long) * Math.PI/180;
-
-    const a = Math.sin(three/2) * Math.sin(three/2) +
-            Math.cos(one) * Math.cos(two) *
-            Math.sin(four/2) * Math.sin(four/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-    const d = R * c / 1609.344;
+    var distance = findDistance(list, lat, long, map);
 
 
     contentWindow = "<h1>This car's info</h1>" + 
                     "<p>ID: "+ obj[i].id + "</p>" +
                     "<p>Username: " + obj[i].username + "</p>" + 
-                    "<p>Distance from me: " + d + " miles</p>";
+                    "<p>Distance from me: " + distance[0] + " miles</p>";
 
     var infoWindow = new google.maps.InfoWindow({content: contentWindow});
     newMark.infowindow = infoWindow;
